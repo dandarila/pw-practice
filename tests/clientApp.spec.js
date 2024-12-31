@@ -26,16 +26,17 @@ test('Happy path login', async ({ page }) => {
 	console.log(titles);
 });
 
-test.only('Add the product to cart', async ({ page }) => {
+test('Add the product to cart', async ({ page }) => {
+	const email = 'marian@mailinator.com'
 	const text = ' Login Successfully ';
 	await page.goto('https://rahulshettyacademy.com/client');
-	await page.locator('#userEmail').fill('marian@mailinator.com');
+	await page.locator('#userEmail').fill(email);
 	await page.locator('#userPassword').fill('Password123');
 	await page.locator('#login').click();
 	const warningText = await page.locator('#toast-container').textContent();
 	expect(warningText).toBe(text);
 
-	const productToBuy = 'ZARA COAT 3';
+	const productToBuy = 'Banarsi Saree';
 
 	// await page.locator('.card').nth(0).locator('button').filter({hasText:  ' Add To Cart'}).click();
 	// const card = page.locator('.card', (has_text = productToBuy));
@@ -55,7 +56,7 @@ test.only('Add the product to cart', async ({ page }) => {
 
   await page.locator('[routerlink *= "cart"]').click();
   await page.locator("div li").first().waitFor();
-  const bool = await page.locator('h3:has-text("ZARA COAT 3")').isVisible();
+  const bool = await page.locator('h3:has-text("Banarsi Saree")').isVisible();
   expect(bool).toBeTruthy();
 
   await page.locator("text=Checkout").click();
@@ -70,8 +71,29 @@ test.only('Add the product to cart', async ({ page }) => {
     }
   }
 
-  await page.locator('text=CVV Code ').locator('input').fill('962');
-  await page.locator('text=Name on Card ').locator('input').fill('Vasilica Putulica');
+  await page.locator('div:has-text("CVV Code ") ~ input').fill('962');
+  await page.locator('div:has-text("Name on Card ") ~ input').fill('Vasilica Putulica');
 
-	await page.pause();
+  await page.pause();
+
+  expect(page.locator(".user__name [type='text']").first()).toHaveText(email);
+  await page.locator('.action__submit').click();
+
+  await expect (page.locator('.hero-primary')).toHaveText(' Thankyou for the order. ');
+
+  const orderId = await page.locator('.em-spacer-1 .ng-star-inserted').textContent();
+  console.log(orderId);
+
+  await page.locator('[routerlink *= "/dashboard/myorders"]').first().click();
+  await page.locator('tbody').waitFor();
+  const rows = page.locator('tbody tr');
+
+  for (let i=0; i < await rows.count(); i++) {
+	const rowOrderId = await rows.nth(i).locator('th').textContent();
+	if (orderId.includes(rowOrderId)) {
+		await rows.nth(i).locator('button').first().click();
+		break;
+	}
+  }
+  expect (orderId.includes(await page.locator('.col-text').textContent())).toBeTruthy();
 });

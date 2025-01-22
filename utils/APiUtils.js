@@ -22,6 +22,7 @@ export default class APiUtils {
         const responseOrderJson = await createOrderResponse.json();
         const orderId = responseOrderJson.orders[0];
         response.orderId = orderId;
+        console.log("token from createOrder: " + response.token)
         return response;
     }
 

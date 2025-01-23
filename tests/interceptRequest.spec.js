@@ -12,26 +12,17 @@ test.beforeAll( async() => {
   response = await apiUtils.createOrder(orderPayload);
 });
 
-test('Client app login', async ({ page }) => {
+test('Request intercept', async ({ page }) => {
+    const url = 'https://rahulshettyacademy.com/api/ecom/order/get-orders-details?id=';
+    const randomId = '1224329897'
     await page.addInitScript(value => {window.localStorage.setItem('token', value)}, response.token);
     await page.goto('https://rahulshettyacademy.com/client/');
-    
-    await page.route('https://rahulshettyacademy.com/api/ecom/order/get-orders-for-customer/*', async route => {
-
-        const response = await page.request.fetch(await route.request());
-        let body = JSON.stringify(fakePayloadOrders);
-        console.log("resy: " + response);
-        await route.fulfill({
-            response, 
-            body,
-        });
-    });
-    
-    // const page = await context.newPage();
     await page.locator('[routerlink *= "/dashboard/myorders"]').first().click();
-    await page.waitForResponse("https://rahulshettyacademy.com/api/ecom/order/get-orders-for-customer/*");
-    console.log(await page.locator(".mt-4").textContent())
-    
+    await page.route(`${url}*`, route => {
+        route.continue(`${url}${randomId}`)
+    })
+
+    await page.locator("button:has-text('View')").first().click();
 });
 
 

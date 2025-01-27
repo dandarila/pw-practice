@@ -19,8 +19,7 @@ test('Happy path login', async ({ page }) => {
 
 	await loginPage.goTo('https://rahulshettyacademy.com/client');
 	await loginPage.validLogin(username, password);
-	
-	expect(warningText).toBe(text);
+	await loginPage.validateWarningText(text);
 
 	// await page.waitForLoadState('networkidle');
 	await page.locator('.card-body').first().waitFor();
@@ -36,8 +35,7 @@ test('Add the product to cart', async ({ page }) => {
 	await page.locator('#userEmail').fill(email);
 	await page.locator('#userPassword').fill('Password123');
 	await page.locator('#login').click();
-	const warningText = await page.locator('#toast-container').textContent();
-	expect(warningText).toBe(text);
+
 
 	const productToBuy = 'Banarsi Saree';
 
@@ -47,15 +45,7 @@ test('Add the product to cart', async ({ page }) => {
 	// await page.pause();
 
   await page.waitForTimeout(3000);
-	const cards = await page.locator('.card-body').all();
 
-	for (let card of cards) {
-    console.log(await card.locator('b').textContent() )
-		if (await card.locator('b').textContent() === productToBuy) {
-		  await card.locator('text = Add To Cart').click();
-      break; 
-		}
-	}
 
   await page.locator('[routerlink *= "cart"]').click();
   await page.locator("div li").first().waitFor();

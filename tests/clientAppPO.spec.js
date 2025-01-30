@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
-import LoginPage from '../pageobjects/LoginPage';
+const  { customTest } = require('../utils/test-base');
+import POManager from '../pageobjects/POManager';
+const testData = JSON.parse(JSON.stringify(require('../utils/placeOrderTestData.json')));
+
+
 
 test('Broswer Context-Validating Error login', async ({ page }) => {
 	const text = ' Incorrect email or password. ';
@@ -12,42 +16,25 @@ test('Broswer Context-Validating Error login', async ({ page }) => {
 });
 
 test('Happy path login', async ({ page }) => {
-	const loginPage = new LoginPage(page);
-	const username = 'marian@mailinator.com';
-	const password = 'Password123';
+    const poManager = new POManager(page);
 	const text = ' Login Successfully ';
+    const loginPage = poManager.getLoginPage();
+    const dashboardPage = poManager.getDashboardPage();
 
 	await loginPage.goTo('https://rahulshettyacademy.com/client');
-	await loginPage.validLogin(username, password);
+	await loginPage.validLogin(testData.username, testData.password);
 	await loginPage.validateWarningText(text);
 
-	// await page.waitForLoadState('networkidle');
-	await page.locator('.card-body').first().waitFor();
-	console.log('Extract all titles from cards');
-	const titles = await page.locator('.card-body').locator('b').allInnerTexts();
-	console.log(titles);
+	await dashboardPage.searchProduct(testData.productToBuy);
+    await page.waitForTimeout(3000);
+    await dashboardPage.navigateToCart();
+
 });
 
 test('Add the product to cart', async ({ page }) => {
-	const email = 'marian@mailinator.com'
-	const text = ' Login Successfully ';
-	await page.goto('https://rahulshettyacademy.com/client');
-	await page.locator('#userEmail').fill(email);
-	await page.locator('#userPassword').fill('Password123');
-	await page.locator('#login').click();
 
 
-	const productToBuy = 'Banarsi Saree';
 
-	// await page.locator('.card').nth(0).locator('button').filter({hasText:  ' Add To Cart'}).click();
-	// const card = page.locator('.card', (has_text = productToBuy));
-	// await card.locator('button').filter({ hasText: ' Add To Cart' }).click();
-	// await page.pause();
-
-  await page.waitForTimeout(3000);
-
-
-  await page.locator('[routerlink *= "cart"]').click();
   await page.locator("div li").first().waitFor();
   const bool = await page.locator('h3:has-text("Banarsi Saree")').isVisible();
   expect(bool).toBeTruthy();

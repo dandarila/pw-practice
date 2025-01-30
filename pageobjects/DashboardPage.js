@@ -1,29 +1,29 @@
 class DashboardPage {
 
     constructor(page) {
-        this.products = page.locatpr('.card-body');
+        this.products = page.locator('.card-body');
         this.productsText = page.locator('.card-body b');
-        this.cart = page.locator('[raouterlink*="cart"]');
+        this.cart = page.locator('[routerlink*="cart"]');
     }
 
-
-    // await page.waitForLoadState('networkidle');
-	await page.locator('.card-body').first().waitFor();
-	console.log('Extract all titles from cards');
-	const titles = await page.locator('.card-body').locator('b').allInnerTexts();
-	console.log(titles);
-
     async searchProduct(productName) {
-        const cards = this.products.all();
+        await this.products.first().waitFor();
+        const titles = await this.productsText.allInnerTexts();
+        const count = await this.products.count();
 
-        for (let card of cards) {
-        console.log(await card.locator('b').textContent() )
-            if (await card.locator('b').textContent() === productToBuy) {
-              await card.locator('text = Add To Cart').click();
-          break; 
+        for (let i = 0; i < count; i++) {
+            if (await this.products.nth(i).locator('b').textContent() === productName) {
+                await this.products.nth(i).locator('text = Add To Cart').click();
+                break; 
             }
         }
     }
 
+    async navigateToCart() {
+        await this.cart.click();
+    }
+
   
 }
+
+export default DashboardPage;

@@ -1,5 +1,6 @@
 // @ts-check
 const { devices } = require('@playwright/test');
+const { permission } = require('process');
 
 const config = {
 	testDir: './tests',
@@ -12,13 +13,30 @@ const config = {
 	},
 
 	reporter: 'html',
-	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-	use: {
-		browserName: 'chromium',
-		headless: false,
-		screenshot: 'on',
-		trace: 'retain-on-failure', //off,on, retain-on-failure
-	},
+	projects: [
+		{
+			name: 'safari', 
+			use: {
+				browserName: 'webkit',
+				headless: false,
+				screenshot: 'off',
+				trace: 'retain-on-failure', //off,on, retain-on-failure
+			}
+		}, 
+		{
+			name: 'chrome', 
+			use: {
+				browserName: 'chromium',
+				headless: false,
+				screenshot: 'on',
+				trace: 'retain-on-failure', //off,on, retain-on-failure, 
+				// viewport: {width: 720, height: 720}, 
+				// ...devices['iPhone 11'], 
+				// ignoreHttpsErrors: true,
+				permission:['geolocation']
+			}
+		}
+	],
 };
 
 module.exports = config;

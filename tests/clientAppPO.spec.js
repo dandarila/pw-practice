@@ -31,6 +31,24 @@ test('Happy path login', async ({ page }) => {
 
 });
 
+
+customTest.only('Custom test fixture', async ({ page, testDataForOrder }) => {
+    const poManager = new POManager(page);
+	const text = ' Login Successfully ';
+    const loginPage = poManager.getLoginPage();
+    const dashboardPage = poManager.getDashboardPage();
+
+	await loginPage.goTo('https://rahulshettyacademy.com/client');
+	await loginPage.validLogin(testDataForOrder.username, testDataForOrder.password);
+	await loginPage.validateWarningText(text);
+
+	await dashboardPage.searchProduct(testDataForOrder.productToBuy);
+    await page.waitForTimeout(3000);
+    await dashboardPage.navigateToCart();
+
+});
+
+
 test('Add the product to cart', async ({ page }) => {
 
 

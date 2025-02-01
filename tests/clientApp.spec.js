@@ -16,11 +16,12 @@ test('Happy path login', async ({ page }) => {
 	const username = 'marian@mailinator.com';
 	const password = 'Password123';
 	const text = ' Login Successfully ';
-
-	await loginPage.goTo('https://rahulshettyacademy.com/client');
+    
+    await loginPage.goTo('https://rahulshettyacademy.com/client');
 	await loginPage.validLogin(username, password);
+    const successText = await page.locator('.toast-title').textContent()
 	
-	expect(warningText).toBe(text);
+	expect(successText).toBe(text);
 
 	// await page.waitForLoadState('networkidle');
 	await page.locator('.card-body').first().waitFor();

@@ -1,0 +1,3 @@
+npx playwright test --grep '@pipeline' --reporter=line,allure-playwright
+allure generate ./allure-results --clean
+allure open ./allure-report

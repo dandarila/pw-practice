@@ -12,7 +12,7 @@ test.beforeAll( async() => {
   response = await apiUtils.createOrder(orderPayload);
 });
 
-test('Client app login', async ({ page }) => {
+test('@pipeline Client app login', async ({ page }) => {
     await page.addInitScript(value => {window.localStorage.setItem('token', value)}, response.token);
     await page.goto('https://rahulshettyacademy.com/client/');
     

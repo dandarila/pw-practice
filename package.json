@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test tests/webApi.spec.js --headed"
+    "test": "npx playwright test tests/webApi.spec.js --headed", 
+    "webTests": "npx playwright test --grep @web"
   },
   "keywords": [],
   "author": "",

@@ -1,3 +1,7 @@
 npx playwright test --grep '@pipeline' --reporter=line,allure-playwright
 allure generate ./allure-results --clean
 allure open ./allure-report
+
+
+
+java -jar jenkins.war -httpPort=8080

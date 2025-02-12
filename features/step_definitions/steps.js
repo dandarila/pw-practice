@@ -1,7 +1,12 @@
 const { When, Then, Given } = require('@cucumber/cucumber');
 const {POManager} = require('../../pageobjects/POManager');
+const {test, expect, playwright} = require('@playwright/test');
 
 Given('The user logins with valid {username} and valid {password}', async (username, password) => {
+    const browser = playwright.chromium.launch();
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    
     const poManager = new POManager(page);
 	const text = ' Login Successfully ';
     const loginPage = poManager.getLoginPage();
